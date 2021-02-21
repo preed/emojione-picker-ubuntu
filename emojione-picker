@@ -91,7 +91,7 @@ def apply_settings():
         "toned": builder.get_object("combo_toned").get_active()-1,
         "notifications": builder.get_object("check_notifications").get_active(),
         "lowend": builder.get_object("check_lowend").get_active(),
-	"recent": builder.get_object("recent").get_value_as_int(),
+        "recent": builder.get_object("recent").get_value_as_int(),
         "paste": builder.get_object("check_paste").get_active()
     }
     # Save settings to file
@@ -314,7 +314,7 @@ def item_response(self, w):
         for k in recent.keys():
             if recent[k]["recent_order"] > biggestindex:
                 biggestindex = recent[k]["recent_order"]
-	nextbiggest = biggestindex
+        nextbiggest = biggestindex
         for i in range (1, settings["recent"]):
             nextbiggest_candidate = 0
             for k in recent.keys():
