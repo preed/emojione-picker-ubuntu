@@ -40,7 +40,7 @@ default_settings = settings = {
     "paste": False
 }
 configpath = expanduser("~") + "/.config/emojione-picker"
-os.path.isdir(configpath) or os.mkdir(configpath)
+os.makedirs(configpath, exist_ok=True)
 
 sockname = '/tmp/emojisocket.' + str(os.getuid()) + os.environ['DISPLAY']
 
