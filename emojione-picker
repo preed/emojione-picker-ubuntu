@@ -292,12 +292,14 @@ def item_response(self, w):
             n.show()
 
     # Remove item from recent if already present
-    try:
-        for k in recent.keys():
-            if recent[k]["emoji_order"] == w["emoji_order"]:
-                del recent[k]
-    except ValueError:
-        pass
+    del_key = None
+    for k in recent.keys():
+        if recent[k]["emoji_order"] == w["emoji_order"]:
+            del_key = k
+            break
+
+    if del_key is not None:
+        del recent[del_key]
 
     # Store item on recent
     w["recent_order"] = recentindex
