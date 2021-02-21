@@ -75,7 +75,7 @@ class SettingsButtonHandler:
         apply_settings()
         button.get_parent_window().destroy()
     def onToggled(self,button):
-        if builder.get_object("check_paste").get_active() == True:
+        if builder.get_object("check_paste").get_active():
             builder.get_object("check_notifications").set_sensitive(False)
         else:
             builder.get_object("check_notifications").set_sensitive(True)
@@ -165,7 +165,7 @@ class SearchHandler:
                     match = True
             if sorted_data[i]["name"].find(search)>-1:
                 match = True
-            if match == True:
+            if match:
                 numfound += 1
                 if numfound > 50:
                     return
@@ -187,7 +187,7 @@ class SearchHandler:
             window.hide()
         elif event.keyval == Gdk.KEY_Down:
             searchbuilder.get_object("iconview").grab_focus()
-        elif event.keyval == Gdk.KEY_Up and selectionChanged == False:
+        elif event.keyval == Gdk.KEY_Up and not selectionChanged:
             searchbuilder.get_object("search").grab_focus()
         selectionChanged = False
     def onOutFocus(self, window, data):
@@ -224,7 +224,7 @@ else:
     recentindex = 0
 
 # If using lowend, load lowend information
-if settings["lowend"] == True:
+if settings["lowend"]:
     lowendfile = directory + "/assets/lowend.json"
     if os.path.isfile(lowendfile):
         with open(lowendfile) as lowend_json_file:
@@ -279,15 +279,15 @@ def item_response(self, w):
     output = ""
     for char in chars:
         output = output + chr(int(char, 16))
-    if settings["paste"]==True:
+    if settings["paste"]:
         GLib.idle_add(type_xdotool,output)
     else:
         clipboard = Gtk.Clipboard.get(Gdk.SELECTION_CLIPBOARD)
         GLib.idle_add(clipboard.set_text,output, -1)
 
     # Show notification
-    if settings["notifications"]==True:
-        if settings["paste"]==False:
+    if settings["notifications"]:
+        if not settings["paste"]:
             n = Notify.Notification.new(w["name"].title(), "Emoji is now in the clipboard. Paste it wherever you want!", directory + "/assets/svg/" + w["unicode"] + ".svg")
             n.show()
 
@@ -399,7 +399,7 @@ if __name__ == "__main__":
         signals = {}
         for category in categories:
             for key in sorted_data:
-                if settings["lowend"] == False or not sorted_data[key]["unicode"] in lowend:
+                if not settings["lowend"] or not sorted_data[key]["unicode"] in lowend:
                     if sorted_data[key]["category"] == category:
                         emoji_group = get_emoji_group(sorted_data[key]["unicode"])
                         if emoji_group != False:
@@ -444,7 +444,7 @@ if __name__ == "__main__":
                                 signals[key] = items[sorted_data[key]["unicode"]].connect("activate", item_response, sorted_data[key])
                             else:
                                 # Toned emoji
-                                if settings["toned"] == -1 and settings["lowend"] == False:
+                                if settings["toned"] == -1 and not settings["lowend"]:
                                     # Show all toned emojis in a submenu
                                     original_key = key
                                     chars = sorted_data[key]["unicode"].split("-")
@@ -481,7 +481,7 @@ if __name__ == "__main__":
                                     signals[key] = items[sorted_data[key]["unicode"]].connect("activate", item_response, sorted_data[key])
                                 else:
                                     # Show only one tone for toned emojis
-                                    if settings["toned"] == 0 or settings["lowend"] == True:
+                                    if settings["toned"] == 0 or settings["lowend"]:
                                         # Untoned emojis are already shown by default, so do nothing
                                         # When using lowend mode, untoned emojis are enforced
                                         pass
