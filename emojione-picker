@@ -13,10 +13,6 @@ import signal
 from collections import OrderedDict
 import re
 
-# Fix enconding in older Python versions
-reload(sys)
-sys.setdefaultencoding('utf8')
-
 # Import GTK
 from gi import require_version
 require_version('AppIndicator3', '0.1')
@@ -282,12 +278,12 @@ def item_response(self, w):
     chars = w["unicode"].split("-")
     output = ""
     for char in chars:
-        output = output + '\\U' + (char.zfill(8))
+        output = output + chr(int(char, 16))
     if settings["paste"]==True:
         GLib.idle_add(type_xdotool,output)
     else:
         clipboard = Gtk.Clipboard.get(Gdk.SELECTION_CLIPBOARD)
-        GLib.idle_add(clipboard.set_text,output.decode('unicode-escape'), -1)
+        GLib.idle_add(clipboard.set_text,output, -1)
 
     # Show notification
     if settings["notifications"]==True:
